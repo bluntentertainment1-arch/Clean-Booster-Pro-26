@@ -1,0 +1,52 @@
+*********** ERROR LOG ***********
+Timestamp: 20251210_135959
+
+[
+  {
+    "file_name": "OnboardingScreen.kt",
+    "error_file_path": "/home/ec2-user/builderAndroidAgent/Sample App/e2c10570-f08b-4d11-ac17-bb454aab6c36/cleaner-guru/app/src/main/java/com/kidblunt/cleanerguru/ui/screens/OnboardingScreen.kt",
+    "file_content": "@file:OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)\npackage com.kidblunt.cleanerguru.ui.screens\nimport androidx.compose.foundation.ExperimentalFoundationApi\nimport androidx.compose.material.ExperimentalMaterialApi\nimport com.kidblunt.cleanerguru.R\n\nimport android.util.Log\nimport androidx.compose.foundation.background\nimport androidx.compose.foundation.layout.*\nimport androidx.compose.foundation.shape.CircleShape\nimport androidx.compose.material.*\nimport androidx.compose.material.icons.Icons\nimport androidx.compose.material.icons.filled.*\nimport androidx.compose.runtime.*\nimport androidx.compose.ui.Alignment\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.draw.clip\nimport androidx.compose.ui.graphics.Brush\nimport androidx.compose.ui.graphics.Color\nimport androidx.compose.ui.graphics.vector.ImageVector\nimport androidx.compose.ui.text.font.FontWeight\nimport androidx.compose.ui.text.style.TextAlign\nimport androidx.compose.ui.unit.dp\nimport androidx.compose.ui.unit.sp\nimport com.google.accompanist.pager.ExperimentalPagerApi\nimport com.google.accompanist.pager.HorizontalPager\nimport com.google.accompanist.pager.HorizontalPagerIndicator\nimport com.google.accompanist.pager.rememberPagerState\nimport com.kidblunt.cleanerguru.ui.theme.CloudBlue\nimport com.kidblunt.cleanerguru.ui.theme.CloudBlueLight\nimport com.kidblunt.cleanerguru.ui.theme.SoftSand\nimport com.kidblunt.cleanerguru.ui.viewmodel.AuthState\nimport com.kidblunt.cleanerguru.ui.viewmodel.AuthViewModel\nimport kotlinx.coroutines.launch\n\nprivate const val TAG = \"OnboardingScreen\"\n\ndata class OnboardingPage(\n    val title: String,\n    val description: String,\n    val icon: ImageVector\n)\n\n@OptIn(ExperimentalPagerApi::class)\n@Composable\nfun OnboardingScreen(\n    authViewModel: AuthViewModel,\n    onNavigateToDashboard: () -> Unit\n) {\n    val authState by authViewModel.authState.collectAsState()\n    val pagerState = rememberPagerState()\n    val scope = rememberCoroutineScope()\n\n    val pages = listOf(\n        OnboardingPage(\n            title = \"Clean Your Device\",\n            description = \"Remove unwanted photos and free up storage space with intelligent scanning\",\n            icon = Icons.Default.CleaningServices\n        ),\n        OnboardingPage(\n            title = \"Optimize Battery\",\n            description = \"Extend battery life with smart power management and background app control\",\n            icon = Icons.Default.BatteryChargingFull\n        ),\n        OnboardingPage(\n            title = \"Boost Performance\",\n            description = \"Enhance gaming experience and overall device performance with one tap\",\n            icon = Icons.Default.Speed\n        )\n    )\n\n    LaunchedEffect(Unit) {\n        Log.d(TAG, \"Checking login status\")\n        if (authViewModel.checkLoginStatus()) {\n            Log.d(TAG, \"User already logged in, navigating to dashboard\")\n            onNavigateToDashboard()\n        } else {\n            Log.d(TAG, \"User not logged in, registering anonymous user\")\n            authViewModel.registerAnonymousUser()\n        }\n    }\n\n    LaunchedEffect(authState) {\n        when (val state = authState) {\n            is AuthState.Success -> {\n                Log.d(TAG, \"Authentication successful, navigating to dashboard\")\n                onNavigateToDashboard()\n            }\n            is AuthState.Error -> {\n                Log.e(TAG, \"Authentication error: ${state.message}\")\n            }\n            else -> {\n                Log.d(TAG, \"Auth state: $state\")\n            }\n        }\n    }\n\n    Box(\n        modifier = Modifier\n            .fillMaxSize()\n            .background(\n                Brush.verticalGradient(\n                    colors = listOf(CloudBlueLight, Color.White, SoftSand.copy(alpha = 0.3f))\n                )\n            )\n    ) {\n        Column(\n            modifier = Modifier.fillMaxSize(),\n            horizontalAlignment = Alignment.CenterHorizontally\n        ) {\n            HorizontalPager(\n                count = pages.size,\n                state = pagerState,\n                modifier = Modifier.weight(1f)\n            ) { page ->\n                OnboardingPageContent(pages[page])\n            }\n\n            HorizontalPagerIndicator(\n                pagerState = pagerState,\n                modifier = Modifier.padding(16.dp),\n                activeColor = CloudBlue,\n                inactiveColor = CloudBlue.copy(alpha = 0.3f)\n            )\n\n            Row(\n                modifier = Modifier\n                    .fillMaxWidth()\n                    .padding(horizontal = 24.dp, vertical = 32.dp),\n                horizontalArrangement = Arrangement.SpaceBetween,\n                verticalAlignment = Alignment.CenterVertically\n            ) {\n                if (pagerState.currentPage > 0) {\n                    TextButton(\n                        onClick = {\n                            scope.launch {\n                                pagerState.animateScrollToPage(pagerState.currentPage - 1)\n                            }\n                        }\n                    ) {\n                        Text(\"Back\", color = CloudBlue)\n                    }\n                } else {\n                    Spacer(modifier = Modifier.width(80.dp))\n                }\n\n                Button(\n                    onClick = {\n                        if (pagerState.currentPage < pages.size - 1) {\n                            scope.launch {\n                                pagerState.animateScrollToPage(pagerState.currentPage + 1)\n                            }\n                        } else {\n                            Log.d(TAG, \"Get Started clicked\")\n                            if (authViewModel.checkLoginStatus()) {\n                                onNavigateToDashboard()\n                            }\n                        }\n                    },\n                    colors = ButtonDefaults.buttonColors(backgroundColor = CloudBlue),\n                    shape = MaterialTheme.shapes.medium,\n                    modifier = Modifier.height(48.dp)\n                ) {\n                    Text(\n                        text = if (pagerState.currentPage < pages.size - 1) \"Next\" else \"Get Started\",\n                        color = Color.White,\n                        fontWeight = FontWeight.Medium\n                    )\n                }\n            }\n        }\n\n        if (authState is AuthState.Loading) {\n            Box(\n                modifier = Modifier\n                    .fillMaxSize()\n                    .background(Color.Black.copy(alpha = 0.3f)),\n                contentAlignment = Alignment.Center\n            ) {\n                CircularProgressIndicator(color = CloudBlue)\n            }\n        }\n    }\n}\n\n@Composable\nfun OnboardingPageContent(page: OnboardingPage) {\n    Column(\n        modifier = Modifier\n            .fillMaxSize()\n            .padding(horizontal = 32.dp),\n        horizontalAlignment = Alignment.CenterHorizontally,\n        verticalArrangement = Arrangement.Center\n    ) {\n        Box(\n            modifier = Modifier\n                .size(120.dp)\n                .clip(CircleShape)\n                .background(CloudBlue.copy(alpha = 0.2f)),\n            contentAlignment = Alignment.Center\n        ) {\n            Icon(\n                imageVector = page.icon,\n                contentDescription = null,\n                modifier = Modifier.size(64.dp),\n                tint = CloudBlue\n            )\n        }\n\n        Spacer(modifier = Modifier.height(48.dp))\n\n        Text(\n            text = page.title,\n            style = MaterialTheme.typography.h1.copy(\n                fontSize = 28.sp,\n                fontWeight = FontWeight.Bold\n            ),\n            textAlign = TextAlign.Center,\n            color = MaterialTheme.colors.onBackground\n        )\n\n        Spacer(modifier = Modifier.height(16.dp))\n\n        Text(\n            text = page.description,\n            style = MaterialTheme.typography.body1,\n            textAlign = TextAlign.Center,\n            color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f),\n            lineHeight = 24.sp\n        )\n    }\n}",
+    "errors": [
+      {
+        "message": "Unresolved reference: pager",
+        "lineno": "25",
+        "columnno": "31"
+      },
+      {
+        "message": "Unresolved reference: ExperimentalPagerApi",
+        "lineno": "44",
+        "columnno": "8"
+      },
+      {
+        "message": "An annotation argument must be a compile-time constant",
+        "lineno": "44",
+        "columnno": "8"
+      },
+      {
+        "message": "Unresolved reference: rememberPagerState",
+        "lineno": "51",
+        "columnno": "22"
+      },
+      {
+        "message": "Unresolved reference: HorizontalPager",
+        "lineno": "111",
+        "columnno": "13"
+      },
+      {
+        "message": "Cannot infer a type for this parameter. Please specify it explicitly.",
+        "lineno": "115",
+        "columnno": "17"
+      },
+      {
+        "message": "@Composable invocations can only happen from the context of a @Composable function",
+        "lineno": "116",
+        "columnno": "17"
+      },
+      {
+        "message": "Unresolved reference: HorizontalPagerIndicator",
+        "lineno": "119",
+        "columnno": "13"
+      }
+    ]
+  }
+]

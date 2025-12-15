@@ -1,0 +1,17 @@
+*********** ERROR LOG ***********
+Timestamp: 20251211_144910
+
+[
+  {
+    "file_name": "MainActivity.kt",
+    "error_file_path": "/home/ec2-user/builderAndroidAgent/feedback_app/0e2dac83-41b4-49ce-8c37-9b6094f033d6/cleaner-guru/app/src/main/java/com/kidblunt/cleanerguru/MainActivity.kt",
+    "file_content": "package com.kidblunt.cleanerguru\n\nimport android.os.Bundle\nimport androidx.activity.ComponentActivity\nimport androidx.activity.compose.setContent\nimport androidx.compose.foundation.layout.fillMaxSize\nimport androidx.compose.material.MaterialTheme\nimport androidx.compose.material.Surface\nimport androidx.compose.ui.Modifier\nimport androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen\nimport com.kidblunt.cleanerguru.ui.navigation.AppNavigation\nimport com.kidblunt.cleanerguru.ui.theme.CleanerGuruTheme\nimport android.content.Context\nimport android.content.SharedPreferences\nimport com.dexati.analytics.UserApi\n\nclass MainActivity : ComponentActivity() {\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        var sharedPreferences: SharedPreferences = getSharedPreferences(\"prefs\", Context.MODE_PRIVATE)\n        var userId = sharedPreferences.getString(\"user_id\", \"\")\n        UserApi.logUserAnalytics(\"5380bb5c-c23c-4a7e-acbf-07ee7a412b56\",userId!!, applicationContext,\"https://api.lastapp.ai/\")\n        \n        // Hide action bar to prevent double toolbar issue\n        supportActionBar?.hide()\n        installSplashScreen()\n        \n        setContent {\n            CleanerGuruTheme {\n                Surface(\n                    modifier = Modifier.fillMaxSize(),\n                    color = MaterialTheme.colors.background\n                ) {\n                    AppNavigation()\n                }\n            }\n        }\n    }\n}",
+    "errors": [
+      {
+        "message": "Unresolved reference: supportActionBar",
+        "lineno": "25",
+        "columnno": "9"
+      }
+    ]
+  }
+]
