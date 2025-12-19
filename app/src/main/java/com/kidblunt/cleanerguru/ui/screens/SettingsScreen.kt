@@ -97,13 +97,13 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "Clean Booster Pro",
+                        text = "Clean Booster Pro 26",
                         style = MaterialTheme.typography.h3,
                         fontWeight = FontWeight.Bold
                     )
 
                     Text(
-                        text = "Version 3",
+                        text = "Version 1.0.1",
                         style = MaterialTheme.typography.body2,
                         color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
                     )
