@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="app_name">Device Tuner Pro 26</string>
-    <string name="splash_loading">Optimizing your device…</string>
-    <string name="dashboard_title">Device Health</string>
+    <string name="splash_loading">Monitoring Usage Performance…</string>
+    <string name="dashboard_title">Device Usage</string>
     <string name="storage_cleanup">Storage Cleanup</string>
-    <string name="battery_saver">Battery Saver</string>
+    <string name="battery_saver">Battery Settings</string>
     <string name="gaming_mode">Gaming Mode</string>
-    <string name="performance_meter">Performance</string>
+    <string name="performance_meter">Usage</string>
     <string name="scan_photos">Scan Photo Library</string>
     <string name="delete_selected">Delete Selected</string>
-    <string name="battery_optimization">Battery Optimization</string>
+    <string name="battery_optimization">Battery Monitor</string>
     <string name="background_restriction">Background App Restriction</string>
     <string name="brightness_control">Screen Brightness</string>
     <string name="gaming_performance">Gaming Performance</string>
