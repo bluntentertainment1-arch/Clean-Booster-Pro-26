@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Cleaner Guru</string>
+    <string name="app_name">Device Tuner Pro 26</string>
     <string name="splash_loading">Optimizing your device…</string>
     <string name="dashboard_title">Device Health</string>
     <string name="storage_cleanup">Storage Cleanup</string>
